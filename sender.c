@@ -22,9 +22,18 @@ int connectToSock(struct NanoSenderSession* this){
   printf("connecting...\n");
   int sock=nn_socket(AF_SP,NN_PUSH);
   this->sock=sock;
-  assert(sock>=0);
-  assert(strlen(this->url)>0);
-  assert(nn_connect(sock, this->url) >= 0);
+  //assert(sock>=0);
+  if(sock<0){
+    return -1;
+  }
+  //assert(strlen(this->url)>0);
+  if(strlen(this->url)<=0){
+    return -2;
+  }
+  //assert(nn_connect(sock, this->url) >= 0);
+  if(nn_connect(sock, this->url) < 0){
+    return -3;
+  }
   return sock;
 }
 int disconnectSock(struct NanoSenderSession* this){

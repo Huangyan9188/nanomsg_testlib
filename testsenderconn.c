@@ -52,37 +52,51 @@ int main(int argc, char const *argv[])
 	struct NanoSenderSession* nss;
 	//nss=newNanoSenderSession(argv[1]);
   nss=newNanoSenderSession("ipc:///tmp/libra_imu.ipc");
-	nss->connect(nss);
-	readFile("./text.txt");
-
-
-	  int m=0;
-  if(signal(SIGINT,sig_handler)==SIG_ERR)
-    printf("\ncan not catch SIGINT\n");
-   while(1){
-  //   if(m%3==0){
-      //printf("sending buffer 1:---%d\n",strlen(buf1));
-      m++;
-      nss->sendMessage(nss,buf1);
-      sleep(3);
-      m++;
-      nss->sendMessage(nss,buf2);
-      sleep(3);
-      m++;
-      nss->sendMessage(nss,buf3);
-      sleep(3);
-    //}else ifs(m%3==1){
-       //printf("sending buffer 2:---%d\n",strlen(buf2));
-      //sleep(10);
-      //nss->sendMessage(nss,buf2);
-    // //}else{
-    //   printf("sending buffer 3:---%d\n",strlen(buf3));
-      //nss->sendMessage(nss,buf3);
-    // //}
-    // m++;
-    //sleep(30);
-      printf("%d msg has sended\n",m );
+  while(true){
+    if(nss->connectToSock(nss)<0){
+      printf("Error for connecting\n");
+    }else{
+      printf("success connect\n", );
+    }
+    sleep(1000);
+    if(nss->disconnectSock(nss)<0){
+      printf("Error for disconnecting\n")
+    }else{
+      printf("success disconnect sock\n");
+    }
+    sleep(1000);
   }
+	//if(nss->connect(nss)<0)
+	//readFile("./text.txt");
+
+
+	 //  int m=0;
+  // if(signal(SIGINT,sig_handler)==SIG_ERR)
+  //   printf("\ncan not catch SIGINT\n");
+  //  while(1){
+  // //   if(m%3==0){
+  //     //printf("sending buffer 1:---%d\n",strlen(buf1));
+  //     m++;
+  //     nss->sendMessage(nss,buf1);
+  //     sleep(3);
+  //     m++;
+  //     nss->sendMessage(nss,buf2);
+  //     sleep(3);
+  //     m++;
+  //     nss->sendMessage(nss,buf3);
+  //     sleep(3);
+  //   //}else ifs(m%3==1){
+  //      //printf("sending buffer 2:---%d\n",strlen(buf2));
+  //     //sleep(10);
+  //     //nss->sendMessage(nss,buf2);
+  //   // //}else{
+  //   //   printf("sending buffer 3:---%d\n",strlen(buf3));
+  //     //nss->sendMessage(nss,buf3);
+  //   // //}
+  //   // m++;
+  //   //sleep(30);
+  //     printf("%d msg has sended\n",m );
+  // }
   //return nss->disconnect(nss);
   return 0;
 }
