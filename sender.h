@@ -7,6 +7,7 @@ struct NanoSenderSession
 {
   /* data */
   int sock;
+  int how;
   char* url;
   void (*sendMessage)(struct NanoSenderSession* this,char *msg);
   int (*connect)(struct NanoSenderSession* this);

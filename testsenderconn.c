@@ -1,8 +1,10 @@
 #include <assert.h>
-
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <string.h>
+#include <unistd.h>
 #include "sender.h"
 // #include <nanomsg/nn.h>
 // #include <unistd.h>
@@ -49,22 +51,39 @@ void sig_handler(int signo){
 int main(int argc, char const *argv[])
 {
 	/* code */
+  int totalconn=0;
+  int totaldisconn=0;
+  int successconn=0;
+  int successdisconn=0;
+  int errconn=0;
+  int errdisconn=0;
+
 	struct NanoSenderSession* nss;
 	//nss=newNanoSenderSession(argv[1]);
   nss=newNanoSenderSession("ipc:///tmp/libra_imu.ipc");
-  while(true){
-    if(nss->connectToSock(nss)<0){
+  while(1){
+    if(nss->connect(nss)<0){
       printf("Error for connecting\n");
+      //totalconn++;
+      errconn++;
     }else{
-      printf("success connect\n", );
+     // totalconn++
+      successconn++;
+      printf("success connect\n" );
     }
-    sleep(1000);
-    if(nss->disconnectSock(nss)<0){
-      printf("Error for disconnecting\n")
+    totalconn++;
+    usleep(500);
+    if(nss->disconnect(nss)==-1){
+      printf("Error for disconnecting\n");
+      printf("%s\n",strerror(errno));
+      errdisconn++;
     }else{
       printf("success disconnect sock\n");
+      successdisconn++;
     }
-    sleep(1000);
+    totaldisconn++;
+    printf("%d,%d,%d,%d,%d,%d\n",totalconn,totaldisconn,successconn,successdisconn,errconn,errdisconn);
+    usleep(500);
   }
 	//if(nss->connect(nss)<0)
 	//readFile("./text.txt");

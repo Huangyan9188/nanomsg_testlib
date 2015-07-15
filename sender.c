@@ -22,6 +22,7 @@ int connectToSock(struct NanoSenderSession* this){
   printf("connecting...\n");
   int sock=nn_socket(AF_SP,NN_PUSH);
   this->sock=sock;
+  this->how=0;
   //assert(sock>=0);
   if(sock<0){
     return -1;
@@ -31,13 +32,15 @@ int connectToSock(struct NanoSenderSession* this){
     return -2;
   }
   //assert(nn_connect(sock, this->url) >= 0);
-  if(nn_connect(sock, this->url) < 0){
+  this->how=nn_connect(sock,this->url);
+  if(this->how< 0){
     return -3;
   }
   return sock;
 }
 int disconnectSock(struct NanoSenderSession* this){
-  return nn_shutdown(this->sock,0);
+ // return nn_shutdown(this->sock,this->how);
+    return nn_close(this->sock);
 }
 struct NanoSenderSession* newNanoSenderSession(char* url){
   struct NanoSenderSession *nss;
